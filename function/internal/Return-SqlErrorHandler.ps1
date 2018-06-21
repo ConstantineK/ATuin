@@ -1,7 +1,9 @@
 function Get-SqlErrorHandler {
   Publish-DebugInfo
   # Probably want to consider rewriting this part in C# and compiling it, its got to be more sane than my approach 
-
+  
+  # Also consider just looking up the last query in the query list, which is globally available in the module, and adding to its statements
+  
   return [System.Data.SqlClient.SqlInfoMessageEventHandler] {
     param($sender, [System.Data.SqlClient.SqlInfoMessageEventArgs]$event)
     # since each print statement raises an error, we need to know if this statement was related to a new statement or not

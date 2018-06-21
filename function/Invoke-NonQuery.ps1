@@ -8,9 +8,7 @@ function Invoke-NonQuery {
     [int]$Timeout = 300
   )
   Publish-DebugInfo
-
-  # from https://www.robinosborne.co.uk/2014/10/13/getting-past-powershell-sqls-incorrect-syntax-near-go-message/
-  # plus edits to make this logging work
+  
   $Global:message_capture = New-Object System.Collections.ArrayList
   $Global:query_logger = New-Object System.Collections.ArrayList
 
@@ -20,6 +18,7 @@ function Invoke-NonQuery {
   $stopWatch = New-Timer
   $batch_counter = 0
   Write-Debug "Starting query batches"
+
   foreach($batch in $batches)
   {
       if ($batch.Trim() -ne ""){
@@ -39,13 +38,21 @@ function Invoke-NonQuery {
         
         Write-Debug "Last batch: $($stopWatch.TimeElapsed())"
         Write-Debug "Total Batches $batch_counter"
+
         $len = 50
         if ($batch.length -lt 50){
           $len = $batch.length
         }
         Write-Debug $batch.Substring(0,$len)
+
       }
   }
   $SqlConnection.Close()
   return , $Global:message_capture
 }
+# Consider something like Dep Injection, you would have global state as a singleton or shared for this run 
+# So how would we name and track runs? 
+# We could start and pass around a GUID 
+# However passing things around by reference is a bit weird in powershell 
+
+# Otherwise, each batch actually has its own logger so we can log to each batch 
