@@ -1,0 +1,1 @@
+You will not get away with script scoped or global scoped items in a parallel context (which is the lazy mode I went now.)
